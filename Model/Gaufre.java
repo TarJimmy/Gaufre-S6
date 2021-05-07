@@ -1,10 +1,13 @@
 package Model;
 
 import java.util.ArrayList;
+
 import java.util.Iterator;
 import java.util.Stack;
 
-public class Gaufre {
+import Patterns.Observable;
+
+public class Gaufre extends Observable {
 	
 	public static final int SUPPRIMER = 0;
 	public static final int PRESENT = 1;
@@ -14,25 +17,39 @@ public class Gaufre {
 	private String joueur2;
 	private int[][] gaufre;
 	
+	private Boolean estTourDeJoueur1;
+	
 	private Stack<ArrayList<int[]>> historique; 
 	
 	public Gaufre(String joueur1, String joueur2, int line, int colonne) {
-		historique = new Stack<>();
+		historique = new Stack<>(); 
 		this.joueur1 = joueur1;
 		this.joueur2 = joueur2;
 		this.gaufre = new int[line][colonne];
+		this.estTourDeJoueur1 = true;
 		nouvellePartie(line, colonne);
 	}
 	
-	public Gaufre(String joueur1, String joueur2, int[][] gaufreRestore, Stack<ArrayList<int[]>> historique) {
+	public Gaufre(String joueur1, String joueur2, Boolean estTourDeJoueur1, int[][] gaufreRestore, Stack<ArrayList<int[]>> historique) {
 		this.joueur1 = joueur1;
 		this.joueur2 = joueur2;
 		this.historique = historique;
 		this.gaufre = gaufreRestore;
 	}
 	
+	public Gaufre(Gaufre gaufre) {
+		this.joueur1 = gaufre.getJoueur1();
+		this.joueur2 = gaufre.getJoueur2();
+		this.gaufre = gaufre.copieGaufre();
+		this.historique = gaufre.copieHistorique();
+	}
+	
 	public int[][] getGaufre() {
 		return gaufre;
+	}
+	
+	public void setGaufre(int[][] gaufre) {
+		this.gaufre = gaufre;
 	}
 	
 	public Stack<ArrayList<int[]>> getHistorique() {
@@ -57,6 +74,16 @@ public class Gaufre {
 		return joueur2;
 	}
 
+	public Boolean getEstTourDeJoueur1() {
+		return estTourDeJoueur1;
+	}
+	
+	public void updateGaufre(Gaufre g) {
+		this.joueur1 = g.joueur1;
+		this.joueur2 = g.joueur2;
+		this.gaufre = g.gaufre;
+		this.historique = g.historique;
+	}
 	/**
 	 * 
 	 * @param xPos
@@ -67,25 +94,28 @@ public class Gaufre {
 	 * PRESENT si tout s'est bien passé
 	 */
 	public int mange(int xPos, int yPos) {
-		if (this.gaufre[xPos][yPos] == SUPPRIMER) {
+		if (this.gaufre[yPos][xPos] == SUPPRIMER) {
 			return SUPPRIMER;
-		} else if (this.gaufre[xPos][yPos] == POISON) {
+		} else if (this.gaufre[yPos][xPos] == POISON) {
+			System.out.println((this.getEstTourDeJoueur1() ? this.getJoueur2() : this.getJoueur1()) + " à gagner !");
 			return POISON;
 		} else {
 			ArrayList<int[]> caseModifs = new ArrayList<>();
 			int[][] copie = copieGaufre();
-			for (int x = xPos; x < copie.length; x++) {
-				for (int y = yPos; y < copie[0].length; y++) {
-					if (copie[x][y] == POISON) {
+			for (int y = yPos; y < copie.length; y++) {
+				for (int x = xPos; x < copie[0].length; x++) {
+					if (copie[y][x] == POISON) {
 						return POISON;
-					} else if (copie[x][y] == PRESENT) {
-						copie[x][y] = SUPPRIMER;
-						caseModifs.add(new int[] {x, y});
+					} else if (copie[y][x] == PRESENT) {
+						copie[y][x] = SUPPRIMER;
+						caseModifs.add(new int[] {y, x});
 					}
 				}
 			}
 			this.gaufre = copie;
+			estTourDeJoueur1 = !estTourDeJoueur1;
 			historique.push(caseModifs);
+			metAJour();
 			return PRESENT;
 		}
 		
@@ -97,6 +127,8 @@ public class Gaufre {
 			for (int[] coup : coupAAnnuler) {
 				gaufre[coup[0]][coup[1]] = PRESENT;
 			}
+			estTourDeJoueur1 = !estTourDeJoueur1;
+			metAJour();
 			return true;
 		} else {
 			return false;
@@ -104,23 +136,40 @@ public class Gaufre {
 	}
 	
 	public void nouvellePartie(int line, int colonne) {
+		gaufre = new int[line][colonne];
+		nouvellePartie();
+	}
+	
+	public void nouvellePartie() {
 		historique.clear();
-		for (int x = 0; x < line; x++) {
-			for (int y = 0; y < colonne; y++) {
-				this.gaufre[x][y] = PRESENT;
+		for (int y = 0; y < gaufre.length; y++) {
+			for (int x = 0; x < gaufre[0].length; x++) {
+				this.gaufre[y][x] = PRESENT;
 			}
 		}
 		this.gaufre[0][0] = POISON;
+		metAJour();
 	}
 	
-	
-	private int[][] copieGaufre() {
+	public int[][] copieGaufre() {
 		int[][] copie = new int[gaufre.length][gaufre[0].length];
-		for (int x = 0; x < copie.length; x++) {
-			copie[x] = gaufre[x].clone();
+		for (int y = 0; y < copie.length; y++) {
+			copie[y] = gaufre[y].clone();
 		}
 		return copie;
 	}
+	
+	@SuppressWarnings("unchecked")
+	public Stack<ArrayList<int[]>> copieHistorique() {
+		Stack<ArrayList<int[]>> stack = new Stack<>();
+		Iterator<ArrayList<int[]>> it = historique.iterator();
+		while (it.hasNext()) {
+			ArrayList<int[]> listeCoupCourant = it.next();
+			stack.push((ArrayList<int[]>)listeCoupCourant.clone());
+		}
+		return stack;
+	}
+	
 	public String toString() {
 		String res = "Historique : \n";
 		Iterator<ArrayList<int[]>> it = historique.iterator();
@@ -133,14 +182,14 @@ public class Gaufre {
 		}
 		res += "\nGaufre : \n";
 		res += "   ";
-		for (int y = 0; y < this.gaufre[0].length; y++) {
-			res += y + " ";
+		for (int x = 0; x < this.gaufre[0].length; x++) {
+			res += x + " ";
 		}
 		res += "\n";
-		for (int x = 0; x < this.gaufre.length; x++) {
-			res += x + ": ";
-			for (int y = 0; y < this.gaufre[0].length; y++) {
-				res += this.gaufre[x][y] + " ";
+		for (int y = 0; y < this.gaufre.length; y++) {
+			res += y + ": ";
+			for (int x = 0; x < this.gaufre[0].length; x++) {
+				res += this.gaufre[y][x] + " ";
 			}
 			res += "\n";
 		}
@@ -153,6 +202,6 @@ public class Gaufre {
 	    Gaufre g = new Gaufre("j1", "j2", 8, 10);
 	    System.out.println(g);
 	    g.mange(6, 6);
-	    System.out.println();
+	    System.out.println(g);
    }
 }

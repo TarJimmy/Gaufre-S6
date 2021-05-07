@@ -21,16 +21,14 @@ import java.util.Scanner;
 
 public class SaveConfig {
 	private String date;
-	private Boolean tour;
 	private Gaufre gaufre;
 	
 	public SaveConfig() {
-		tour = null;
 		date = null;
 		gaufre = null;
 	}
 	
-	public void sauvegarderPartie(Gaufre gaufre, Boolean tour){
+	public void sauvegarderPartie(Gaufre gaufre){
 		String filePath = Configuration.instance().dirSauv + "/sauv.txt";
 		try {
 			// Create new file if needed
@@ -45,7 +43,7 @@ public class SaveConfig {
 			
 			fWriter.write(gaufre.getJoueur1() + "\n");
 			fWriter.write(gaufre.getJoueur2() + "\n");
-			fWriter.write(tour.toString() + "\n");			
+			fWriter.write(gaufre.getEstTourDeJoueur1().toString() + "\n");			
 			Iterator<ArrayList<int[]>> it = gaufre.getHistorique().iterator();
 			
 			String strHistorique = "";
@@ -85,7 +83,7 @@ public class SaveConfig {
 			this.date = fReader.nextLine().trim();
 			String joueur1 = fReader.nextLine().trim();
 			String joueur2 = fReader.nextLine().trim();
-			this.tour = Boolean.parseBoolean(fReader.nextLine().trim());
+			Boolean tour = Boolean.parseBoolean(fReader.nextLine().trim());
 			//Initialisation historique
 			Stack<ArrayList<int[]>> historique = new Stack<ArrayList<int[]>>();
 			String lineCurrent = fReader.nextLine().trim();
@@ -95,7 +93,6 @@ public class SaveConfig {
 				for (String coup : tabListCoup) {
 					int[] coupCurrent = new int[2];
 					String[] coordonne = coup.split(",");
-					System.out.println(coup);
 					coupCurrent[0] = Integer.parseInt(coordonne[0]);
 					coupCurrent[1] = Integer.parseInt(coordonne[1]);
 					listCoupCurrente.add(coupCurrent);
@@ -119,7 +116,7 @@ public class SaveConfig {
 			
 			fReader.close();
 
-			this.gaufre = new Gaufre(joueur1, joueur2, gaufreArray, historique);
+			this.gaufre = new Gaufre(joueur1, joueur2, tour, gaufreArray, historique);
 			
 		} catch (IOException e) {
 	      System.out.println("An error occurred.");
@@ -130,10 +127,6 @@ public class SaveConfig {
 	// date tour et gaufre initiliasés après appel de chargePartieSauvegarder
 	public String getDatePartie() {
 		return date;
-	}
-	
-	public Boolean getTour() {
-		return tour;
 	}
 
 	public Gaufre getGaufre() {
@@ -146,11 +139,10 @@ public class SaveConfig {
 		g.mange(2, 4);
 	    System.out.println(g);
 	    SaveConfig sc = new SaveConfig();
-	    sc.sauvegarderPartie(g, false);
+	    sc.sauvegarderPartie(g);
 	    sc.chargePartieSauvegarder();
 	    Gaufre g2 = sc.getGaufre();
 	    System.out.println(sc.getDatePartie());
-	    System.out.println(sc.getTour());
 	    System.out.println(g2);
 	}
 }
