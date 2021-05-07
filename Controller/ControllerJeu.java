@@ -112,4 +112,10 @@ public class ControllerJeu implements CollecteurEvenements {
 		}
 		return false;
 	}
+
+	@Override
+	public boolean configuration(String c, int nbLigne, int nbColonne, String joueur1, String joueur2) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }
