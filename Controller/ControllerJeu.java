@@ -5,6 +5,8 @@ import java.util.Scanner;
 import Model.Gaufre;
 import Model.SaveConfig;
 import View.CollecteurEvenements;
+import View.VueFin;
+import View.VueMenu;
 
 public class ControllerJeu implements CollecteurEvenements {
 	
@@ -74,6 +76,10 @@ public class ControllerJeu implements CollecteurEvenements {
 	private void nouvellePartie() {
 		gaufre.nouvellePartie();
 	}
+	
+	private void quitterJeu() {
+		System.exit(0);
+	}
 
 	@Override
 	public boolean commande(String c) {	
@@ -81,9 +87,8 @@ public class ControllerJeu implements CollecteurEvenements {
 			case "nouvellePartie":
 				nouvellePartie();
 				break;
-			case "chargerPartie":
-				chargerPartie();
-				
+			case "quitterJeu":
+				quitterJeu();
 				break;
 			case "sauvegarderPartie":
 				sauvegarderPartie();
@@ -96,7 +101,7 @@ public class ControllerJeu implements CollecteurEvenements {
 		}
 		return false;
 	}
-	
+
 	public String toString() {
 		return "Controller Jeu";
 	}
@@ -114,7 +119,13 @@ public class ControllerJeu implements CollecteurEvenements {
 	}
 
 	@Override
-	public boolean configuration(String c, int nbLigne, int nbColonne, String joueur1, String joueur2) {
+	public boolean configuration(String c, VueMenu vueMenu) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean configuration(String c, VueFin vueFin) {
 		// TODO Auto-generated method stub
 		return false;
 	}

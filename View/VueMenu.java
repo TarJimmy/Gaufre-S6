@@ -4,27 +4,28 @@ import java.awt.Component;
 
 import javax.swing.*;
 
-import Controller.ControllerMenu;
-
 public class VueMenu {
 	
 	private CollecteurEvenements collecteur;
 	
-	JFrame fenetreMenu;
-	JLabel newParty = new JLabel("Nouvelle partie");
+	private JFrame fenetreMenu;
+	private JPanel Button = new JPanel();
+	private JPanel joueur = new JPanel();
+	private JPanel gaufre = new JPanel();
+	private JLabel newParty = new JLabel("Nouvelle partie");
 	//nom du joueur 1
-	JLabel joueur1 = new JLabel("Joueur 1");
-	JTextField J1 = new JTextField(20);
+	private JLabel joueur1 = new JLabel("Joueur 1");
+	private JTextField J1 = new JTextField(10);
 	//nom du joueur 2
-	JLabel joueur2 = new JLabel("Joueur 2");
-	JTextField J2 = new JTextField(20);
+	private JLabel joueur2 = new JLabel("Joueur 2");
+	private JTextField J2 = new JTextField(10);
 	//Taille de la gaufre
-	JLabel Taille = new JLabel("Taille de la gauffre :");
-	JLabel Ligne = new JLabel("Ligne");
-	JTextField l = new JTextField(5);
-	JLabel Colonne = new JLabel("Colonne");
-	JTextField c = new JTextField(5);
-	JButton valider = new JButton("Valider");
+	private JLabel Taille = new JLabel("Taille de la gaufre :");
+	private JLabel Ligne = new JLabel("Ligne");
+	private JTextField l = new JTextField(5);
+	private JLabel Colonne = new JLabel("Colonne");
+	private JTextField c = new JTextField(5);
+	private JButton valider = new JButton("Valider");
 	private JButton charger = new JButton("Charger la dernière partie");
 	
 	private Box box;
@@ -34,27 +35,42 @@ public class VueMenu {
 		this.collecteur = collecteur;
 	    joueur1.setLabelFor(J1);
 	    joueur2.setLabelFor(J2);
-	    Ligne.setLabelFor(J1);
-	    Colonne.setLabelFor(J1);
-		valider.addActionListener(new AdaptateurConfiguration(collecteur, "valider", this));
-		charger.addActionListener(new AdaptateurConfiguration(collecteur, "charger", this));
+	    Ligne.setLabelFor(l);
+	    Colonne.setLabelFor(c);
+		valider.addActionListener(new AdaptateurConfiguration(this.collecteur, "valider", this));
+		charger.addActionListener(new AdaptateurConfiguration(this.collecteur, "charger", this));
+		
+		newParty.setAlignmentX(Component.CENTER_ALIGNMENT);
+		joueur1.setAlignmentX(Component.LEFT_ALIGNMENT);
+		J1.setAlignmentX(Component.RIGHT_ALIGNMENT);
+		joueur2.setAlignmentX(Component.LEFT_ALIGNMENT);
+		J2.setAlignmentX(Component.RIGHT_ALIGNMENT);
+		Taille.setAlignmentX(Component.CENTER_ALIGNMENT);
+		Ligne.setAlignmentX(Component.LEFT_ALIGNMENT);
+		l.setAlignmentX(Component.RIGHT_ALIGNMENT);
+		Colonne.setAlignmentX(Component.LEFT_ALIGNMENT);
+		c.setAlignmentX(Component.RIGHT_ALIGNMENT);
+		
 		this.box = Box.createVerticalBox();
 		box.add(newParty);
-		box.add(joueur1);
-		box.add(J1);
-		box.add(joueur2);
-		box.add(J2);
+		joueur.add(joueur1);
+		joueur.add(J1);
+		joueur.add(joueur2);
+		joueur.add(J2);
+		box.add(joueur);
 		box.add(Taille);
-		box.add(Ligne);
-		box.add(l);
-		box.add(Colonne);
-		box.add(c);
-		box.add(valider);
-		box.add(charger);
+		gaufre.add(Ligne);
+		gaufre.add(l);
+		gaufre.add(Colonne);
+		gaufre.add(c);
+		box.add(gaufre);
+		Button.add(valider);
+		Button.add(charger);
+		box.add(Button);
 		
 		fenetreMenu.add(box);
 		fenetreMenu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		fenetreMenu.setSize(500,300);
+		fenetreMenu.setSize(500,175);
 		fenetreMenu.setVisible(true);
 	}
 	
@@ -62,8 +78,22 @@ public class VueMenu {
 		return box;
 	}
 	
-	public static void main (String[] args){
-		VueMenu f1 = new VueMenu(new ControllerMenu());
-	    
+	public String getJoueur1() {
+		return J1.getText();
+	}
+	
+	public String getJoueur2() {
+		return J2.getText();
+	}
+	
+	public String getLigne() {
+		return l.getText();
+	}
+	public String getColonne() {
+		return c.getText();
+	}
+
+	public JFrame getFenetreMenu() {
+		return fenetreMenu;
 	}
 }

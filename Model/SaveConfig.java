@@ -115,7 +115,7 @@ public class SaveConfig {
 			}
 			
 			fReader.close();
-
+			
 			this.gaufre = new Gaufre(joueur1, joueur2, tour, gaufreArray, historique);
 			
 		} catch (IOException e) {

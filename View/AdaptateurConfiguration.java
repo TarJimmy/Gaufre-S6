@@ -8,20 +8,26 @@ public class AdaptateurConfiguration implements ActionListener{
 	private CollecteurEvenements control;
 	private String commande;
 	private VueMenu vueMenu;
+	private VueFin vueFin;
+	
 	AdaptateurConfiguration(CollecteurEvenements c, String com, VueMenu vueMenu) {
 		control = c;
 		commande = com;
 		this.vueMenu = vueMenu;
 	}
+	
+	AdaptateurConfiguration(CollecteurEvenements c, String com, VueFin vueFin) {
+		control = c;
+		commande = com;
+		this.vueFin = vueFin;
+	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		
-		int l_2 = Integer.parseInt(vueMenu.l.getText());
-		int c_2 = Integer.parseInt(vueMenu.c.getText());
-		vueMenu.getBox().dispose();
-		
-		//String c, int nbLigne, int nbColonne, String joueur1, String joueur2
-		control.configuration(com);
+		if (vueMenu!=null) {
+			control.configuration(commande,vueMenu);
+		} else {
+			control.configuration(commande,vueFin);
+		}
 	}
 }

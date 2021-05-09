@@ -33,6 +33,7 @@ public class Gaufre extends Observable {
 	public Gaufre(String joueur1, String joueur2, Boolean estTourDeJoueur1, int[][] gaufreRestore, Stack<ArrayList<int[]>> historique) {
 		this.joueur1 = joueur1;
 		this.joueur2 = joueur2;
+		this.estTourDeJoueur1 = estTourDeJoueur1;
 		this.historique = historique;
 		this.gaufre = gaufreRestore;
 	}
@@ -97,7 +98,7 @@ public class Gaufre extends Observable {
 		if (this.gaufre[yPos][xPos] == SUPPRIMER) {
 			return SUPPRIMER;
 		} else if (this.gaufre[yPos][xPos] == POISON) {
-			System.out.println((this.getEstTourDeJoueur1() ? this.getJoueur2() : this.getJoueur1()) + " à gagner !");
+			finit(this.getEstTourDeJoueur1(), this.getJoueur2(), this.getJoueur1());
 			return POISON;
 		} else {
 			ArrayList<int[]> caseModifs = new ArrayList<>();
@@ -195,13 +196,4 @@ public class Gaufre extends Observable {
 		}
 		return res;
 	}
-	
-	public static void main (String[] args) {
-	    System.out.println("-----Test Gaufre-----");
-	    System.out.println("TEST fct manger---");
-	    Gaufre g = new Gaufre("j1", "j2", 8, 10);
-	    System.out.println(g);
-	    g.mange(6, 6);
-	    System.out.println(g);
-   }
 }

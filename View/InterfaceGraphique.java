@@ -3,17 +3,13 @@ package View;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.Observer;
-
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+import Controller.ControllerFin;
 import Model.Gaufre;
 import Patterns.Observateur;
 
@@ -23,6 +19,7 @@ public class InterfaceGraphique implements Runnable, Observateur {
 	private Gaufre gaufre;
 	private JFrame frame;
 	private VueGaufre vueGaufre;
+	private JLabel joueur;
 	CollecteurEvenements controle;
 	
 	private InterfaceGraphique(Gaufre gaufre, CollecteurEvenements controle) {
@@ -31,7 +28,12 @@ public class InterfaceGraphique implements Runnable, Observateur {
 	}
 	
 	public void run() {
-		frame = new JFrame("Gaufre");
+		frame = new JFrame("Gaufre - Jeu");
+		JPanel panelJoueur = new JPanel();
+		joueur = createLabel("");
+		tourJoueur();
+		panelJoueur.add(joueur);
+		frame.add(panelJoueur, BorderLayout.NORTH);
 		int width = SIZEBLOCK * gaufre.getNbColonne();
 		int height = SIZEBLOCK * gaufre.getNbLigne() + 75; // 150 c'est pour le panel
 		frame.setSize(width, height);
@@ -43,10 +45,10 @@ public class InterfaceGraphique implements Runnable, Observateur {
 		JPanel panelButton = new JPanel();
 		panelButton.setBackground(Color.WHITE);
 		frame.add(panelButton, BorderLayout.SOUTH);
-		panelButton.add(createButtonCommande("Nouvelle Partie", "nouvellePartie"));
-		panelButton.add(createButtonCommande("Charger Partie", "chargerPartie"));
+		panelButton.add(createButtonCommande("Quitter Jeu", "quitterJeu"));
+		panelButton.add(createButtonCommande("Recommencer", "nouvellePartie"));
 		panelButton.add(createButtonCommande("Sauvegarder Partie", "sauvegarderPartie"));
-		panelButton.add(createButtonCommande("Annuler coup", "annulerCoup"));
+		panelButton.add(createButtonCommande("Annuler Coup", "annulerCoup"));
 		
 		gaufre.ajouteObservateur(this);
 		frame.setVisible(true);
@@ -64,11 +66,33 @@ public class InterfaceGraphique implements Runnable, Observateur {
 		but.setFocusable(false);
 		return but;
 	}
+	
+	private JLabel createLabel(String s) {
+		JLabel lab = new JLabel(s);
+		lab.setAlignmentX(Component.CENTER_ALIGNMENT);
+		return lab;
+	}
+	
+	private void tourJoueur() {
+		if (gaufre.getEstTourDeJoueur1()) {
+			joueur.setText("A "+gaufre.getJoueur1()+" de jouer !");
+		} else {
+			joueur.setText("A "+gaufre.getJoueur2()+" de jouer !");
+		}
+	}
 
 	@Override
 	public void miseAJour() {
 		// TODO Auto-generated method stub
+		tourJoueur();
 		vueGaufre.misAjour();
+	}
+
+	@Override
+	public void fin(Boolean b, String J1, String J2) {
+		frame.dispose();
+		new VueFin(new ControllerFin(), b, J1, J2);
+		
 	}
 	
 	public static void main(String[] args) {
@@ -88,7 +112,13 @@ public class InterfaceGraphique implements Runnable, Observateur {
 			}
 
 			@Override
-			public boolean configuration(String c, int nbLigne, int nbColonne, String joueur1, String joueur2) {
+			public boolean configuration(String c, VueMenu vueMenu) {
+				// TODO Auto-generated method stub
+				return false;
+			}
+
+			@Override
+			public boolean configuration(String c, VueFin vueFin) {
 				// TODO Auto-generated method stub
 				return false;
 			}
