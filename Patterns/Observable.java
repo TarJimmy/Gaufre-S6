@@ -55,4 +55,14 @@ public class Observable {
 			o.miseAJour();
 		}
 	}
+	
+//	public void finit(Boolean b, String J1, String J2) {
+//		Iterator<Observateur> it;
+//		
+//		it = observateurs.iterator();
+//		while (it.hasNext()) {
+//			Observateur o = it.next();
+//			o.fin(b, J1, J2);
+//		}
+//	}
 }

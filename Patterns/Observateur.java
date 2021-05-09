@@ -33,4 +33,5 @@ package Patterns;
  */
 public interface Observateur {
 	void miseAJour();
+	//void fin(...)
 }

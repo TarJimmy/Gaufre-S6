@@ -2,18 +2,20 @@ package Model;
 
 import java.awt.Point;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Random;
 
 public class IAFacile extends IA {
 	
-	IAFacile (Gaufre gaufre) {
+	public IAFacile (Gaufre gaufre) {
 		super(gaufre);
 	}
 	
+	@Override
 	public Point getCoup() {
-		HashMap <String, Point> config = getConfigsPossibles();
-		Object[] points = config.values().toArray();
+		String config = "";
+		config = setString(config, gaufre);
+		HashMap <String, Point> coups = getConfigsPossibles(config);
+		Object[] points = coups.values().toArray();
 		Random generator = new Random();
 		Point randomPoint = (Point)points[generator.nextInt(points.length)];
 
@@ -21,11 +23,11 @@ public class IAFacile extends IA {
 	}
 	
 	public static void main(String[] args) {
-		Point res= new Point(0,0);
 		Gaufre gt = new Gaufre("j1","j2",3,3);
 		IAFacile monIA = new IAFacile(gt);
-		res = monIA.getCoup();
-		System.out.println(res);
+		Point p = new Point(0,0);
+		p = monIA.getCoup();
+		System.out.println(p);
 		
 	}
 }

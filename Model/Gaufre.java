@@ -20,6 +20,7 @@ public class Gaufre extends Observable {
 	private Boolean estTourDeJoueur1;
 	
 	private Stack<ArrayList<int[]>> historique; 
+	private Boolean hasWinner;
 	
 	public Gaufre(String joueur1, String joueur2, int line, int colonne) {
 		historique = new Stack<>(); 
@@ -27,14 +28,17 @@ public class Gaufre extends Observable {
 		this.joueur2 = joueur2;
 		this.gaufre = new int[line][colonne];
 		this.estTourDeJoueur1 = true;
+		this.hasWinner = false;
 		nouvellePartie(line, colonne);
 	}
 	
 	public Gaufre(String joueur1, String joueur2, Boolean estTourDeJoueur1, int[][] gaufreRestore, Stack<ArrayList<int[]>> historique) {
 		this.joueur1 = joueur1;
 		this.joueur2 = joueur2;
+		this.estTourDeJoueur1 = estTourDeJoueur1;
 		this.historique = historique;
 		this.gaufre = gaufreRestore;
+		this.hasWinner = false;
 	}
 	
 	public Gaufre(Gaufre gaufre) {
@@ -42,6 +46,8 @@ public class Gaufre extends Observable {
 		this.joueur2 = gaufre.getJoueur2();
 		this.gaufre = gaufre.copieGaufre();
 		this.historique = gaufre.copieHistorique();
+		this.estTourDeJoueur1 = gaufre.getEstTourDeJoueur1();
+		this.hasWinner = false;
 	}
 	
 	public int[][] getGaufre() {
@@ -83,6 +89,7 @@ public class Gaufre extends Observable {
 		this.joueur2 = g.joueur2;
 		this.gaufre = g.gaufre;
 		this.historique = g.historique;
+		this.hasWinner = false;
 	}
 	/**
 	 * 
@@ -97,7 +104,9 @@ public class Gaufre extends Observable {
 		if (this.gaufre[yPos][xPos] == SUPPRIMER) {
 			return SUPPRIMER;
 		} else if (this.gaufre[yPos][xPos] == POISON) {
-			System.out.println((this.getEstTourDeJoueur1() ? this.getJoueur2() : this.getJoueur1()) + " à gagner !");
+			//finit(...)
+			this.hasWinner = true;
+			metAJour();
 			return POISON;
 		} else {
 			ArrayList<int[]> caseModifs = new ArrayList<>();
@@ -194,6 +203,10 @@ public class Gaufre extends Observable {
 			res += "\n";
 		}
 		return res;
+	}
+	
+	public Boolean getHasWinner() {
+		return this.hasWinner;
 	}
 	
 	public static void main (String[] args) {
